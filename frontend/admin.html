@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Fuelora</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { background: #f4f6fb; margin: 0; }
+        .admin-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        .admin-sidebar {
+            width: 230px;
+            background: linear-gradient(160deg, #23272f 60%, #313846 100%);
+            color: #fff;
+            padding: 40px 0 0 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 2px 0 16px 0 rgba(44,62,80,0.10);
+            border-top-right-radius: 18px;
+            border-bottom-right-radius: 18px;
+            height: 100vh;
+        }
+        .admin-sidebar h2 {
+            margin-bottom: 48px;
+            font-size: 24px;
+            color: #44bd32;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px rgba(68,189,50,0.08);
+        }
+        .admin-sidebar ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+        .admin-sidebar li {
+            width: 100%;
+            margin-bottom: 8px;
+        }
+        .admin-sidebar button {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #fff;
+            padding: 18px 0;
+            font-size: 17px;
+            text-align: left;
+            padding-left: 44px;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s, border-radius 0.2s;
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            border-radius: 0 24px 24px 0;
+            position: relative;
+            z-index: 1;
+            letter-spacing: 0.5px;
+        }
+        .admin-sidebar button.active, .admin-sidebar button:hover {
+            background: linear-gradient(90deg, #44bd32 80%, #6ee27a 100%);
+            color: #fff;
+            box-shadow: 2px 4px 16px 0 rgba(68,189,50,0.10);
+            border-radius: 0 24px 24px 0;
+            font-weight: 600;
+        }
+        .admin-sidebar button.active {
+            font-size: 18px;
+            box-shadow: 2px 6px 18px 0 rgba(68,189,50,0.13);
+        }
+        @media (max-width: 900px) {
+            .admin-sidebar {
+                width: 100px;
+                padding: 20px 0 0 0;
+            }
+            .admin-sidebar h2 {
+                font-size: 16px;
+                margin-bottom: 24px;
+            }
+            .admin-sidebar button {
+                font-size: 0;
+                padding-left: 0;
+                min-height: 48px;
+            }
+            .admin-sidebar button.active {
+                font-size: 0;
+            }
+        }
+        .admin-main {
+            flex: 1;
+            padding: 50px 40px;
+            background: #f4f6fb;
+        }
+        .admin-section {
+            display: none;
+        }
+        .admin-section.active {
+            display: block;
+        }
+        .section-title {
+            font-size: 2rem;
+            color: #2f3542;
+            margin-bottom: 30px;
+        }
+        .placeholder {
+            color: #747d8c;
+            font-size: 1.2rem;
+            margin-top: 20px;
+        }
+        .order-stats-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .total-orders-card {
+            background: #44bd32;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .total-orders-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .order-count {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .category-orders h3 {
+            color: #2f3542;
+            margin-bottom: 20px;
+        }
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        .category-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .category-card h4 {
+            color: #2f3542;
+            margin: 0 0 10px 0;
+        }
+        .category-count {
+            font-size: 1.8rem;
+            color: #44bd32;
+            font-weight: bold;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .switch input:checked + .slider {
+            background-color: #44bd32;
+        }
+        
+        .switch input:not(:checked) + .slider {
+            background-color: #e74c3c;
+        }
+        
+        .switch input:checked + .slider .slider-circle {
+            transform: translateX(26px);
+        }
+        
+        .switch input:not(:checked) + .slider .slider-circle {
+            transform: translateX(0);
+        }
+        .sidebar-logout {
+            width: 100%;
+            margin-top: auto;
+            padding-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .sidebar-logout button {
+            width: 80%;
+            background: linear-gradient(90deg, #ff4757 80%, #ff7b7b 100%);
+            color: #fff;
+            border: none;
+            padding: 14px 0;
+            border-radius: 18px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(255,71,87,0.10);
+            transition: background 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <nav class="admin-sidebar">
+            <img src="logo.png" alt="Company Logo" style="display: block; width: 90px; height: 90px; object-fit: contain; margin: 0 auto 22px auto; border-radius: 18px; box-shadow: 0 4px 18px rgba(68,189,50,0.10); background: #fff;" />
+            <h2>Fuelora Admin</h2>
+            <ul>
+                <li><button id="ordersTab" class="active">Order Management</button></li>
+                <li><button id="stockTab">Stock Management</button></li>
+                <li><button id="usersTab">User Management</button></li>
+                <li><button id="earningsTab">Earnings Management</button></li>
+                <!-- Removed Feedback Management tab -->
+            </ul>
+        </nav>
+        <main class="admin-main">
+            <section id="ordersSection" class="admin-section active">
+                <div class="section-title">Order Management</div>
+                <div class="order-stats-container" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                    <div class="total-orders-card" style="background: linear-gradient(135deg, #44bd32 0%, #2ecc71 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(68, 189, 50, 0.2);">
+                        <h3 style="margin: 0; font-size: 1.2rem; opacity: 0.9;">Total Orders</h3>
+                        <div class="order-count" style="font-size: 2.5rem; font-weight: bold; margin-top: 15px;">0</div>
+                    </div>
+                    <div class="total-petrol-card" style="background: linear-gradient(135deg, #f7b731 0%, #f5cd79 100%); color: #2f3542; padding: 20px; border-radius: 8px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(247,183,49,0.13);">
+                        <h3 style="margin: 0; font-size: 1.2rem; opacity: 0.9;">Total Liters of Fuel Sold</h3>
+                        <div class="petrol-liters-count" style="font-size: 2.2rem; font-weight: bold; margin-top: 15px;">0 L</div>
+                    </div>
+                    <div class="category-orders">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; font-size: 1.3rem; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5;">Orders by Category</h3>
+                        <div class="category-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px;">
+                            <div class="category-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Normal Petrol</h4>
+                                <div class="category-count" style="font-size: 2rem; color: #44bd32; font-weight: bold;">0</div>
+                            </div>
+                            <div class="category-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Diesel</h4>
+                                <div class="category-count" style="font-size: 2rem; color: #44bd32; font-weight: bold;">0</div>
+                            </div>
+                            <div class="category-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">X95</h4>
+                                <div class="category-count" style="font-size: 2rem; color: #44bd32; font-weight: bold;">0</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="total-quantity-section" style="margin-top: 40px;">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; font-size: 1.3rem; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5;">Total Fuel Quantity Sold</h3>
+                        <div class="category-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px;">
+                            <div class="category-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 25px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);">
+                                <h4 style="margin: 0 0 15px 0; font-size: 1.1rem; opacity: 0.9;">Normal Petrol</h4>
+                                <div class="category-count" style="font-size: 2rem; font-weight: bold;">0 L</div>
+                            </div>
+                            <div class="category-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 25px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);">
+                                <h4 style="margin: 0 0 15px 0; font-size: 1.1rem; opacity: 0.9;">Diesel</h4>
+                                <div class="category-count" style="font-size: 2rem; font-weight: bold;">0 L</div>
+                            </div>
+                            <div class="category-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 25px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);">
+                                <h4 style="margin: 0 0 15px 0; font-size: 1.1rem; opacity: 0.9;">X95</h4>
+                                <div class="category-count" style="font-size: 2rem; font-weight: bold;">0 L</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="stockSection" class="admin-section">
+                <div class="section-title">Stock Management</div>
+                <div class="stock-container" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                    <div class="stock-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f2f5;">
+                        <h3 style="margin: 0; color: #2f3542; font-size: 1.5rem;">Current Stock Levels</h3>
+                        <button id="updateStockBtn" style="background: linear-gradient(135deg, #44bd32 0%, #2ecc71 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 1rem; font-weight: 500; box-shadow: 0 4px 15px rgba(68, 189, 50, 0.2); transition: transform 0.2s;">Update Stock</button>
+                    </div>
+                    
+                    <!-- Indian Oil Section -->
+                    <div class="bunk-section" style="margin-bottom: 40px;">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5; font-size: 1.3rem;">Indian Oil</h3>
+                        <div class="stock-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Normal Petrol</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Diesel</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">X95</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shell Section -->
+                    <div class="bunk-section" style="margin-bottom: 40px;">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5; font-size: 1.3rem;">Shell</h3>
+                        <div class="stock-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                            <!-- Same stock cards as Indian Oil -->
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Normal Petrol</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Diesel</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">X95</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- HP Section -->
+                    <div class="bunk-section">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #f0f2f5; font-size: 1.3rem;">Hindustan Petroleum</h3>
+                        <div class="stock-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+                            <!-- Same stock cards as Indian Oil -->
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Normal Petrol</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Diesel</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="stock-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">X95</h4>
+                                <div class="stock-level" style="font-size: 2rem; color: #44bd32; font-weight: bold; margin: 15px 0;">0 L</div>
+                                <div class="stock-status" style="color: #747d8c; margin: 15px 0; padding: 10px; background: rgba(68, 189, 50, 0.1); border-radius: 6px;">
+                                    <span style="font-weight: 600;">Stock Status:</span> 
+                                    <span class="status-text" style="color: #44bd32;">Normal</span>
+                                </div>
+                                <div class="stock-threshold" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
+                                    <div style="margin-bottom: 15px; color: #747d8c;">
+                                        <span style="font-weight: 600;">Warning Level:</span>
+                                        <span style="margin-left: 5px;">When stock goes below this level, you'll get a warning</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center;">
+                                        <label style="font-weight: 600; color: #2f3542;">Set Warning Level (L):</label>
+                                        <input type="number" class="threshold-input" value="1000" min="0" style="width: 120px; padding: 8px 12px; margin-left: 10px; border: 1px solid #e9ecef; border-radius: 6px; font-size: 1rem;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stock Update Modal -->
+                    <div id="stockUpdateModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+                        <div class="modal-content" style="background: white; width: 600px; margin: 100px auto; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                            <h3 style="color: #2f3542; margin: 0 0 25px 0; font-size: 1.5rem;">Update Stock Levels</h3>
+                            <div class="bunk-tabs" style="margin-bottom: 25px; display: flex; gap: 10px;">
+                                <button class="bunk-tab active" data-bunk="indian" style="background: #f8f9fa; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #2f3542; transition: all 0.2s;">Indian Oil</button>
+                                <button class="bunk-tab" data-bunk="shell" style="background: #f8f9fa; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #2f3542; transition: all 0.2s;">Shell</button>
+                                <button class="bunk-tab" data-bunk="hp" style="background: #f8f9fa; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 1rem; color: #2f3542; transition: all 0.2s;">Hindustan Petroleum</button>
+                            </div>
+                            <div class="stock-inputs" style="margin: 25px 0;">
+                                <div class="input-group" style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; color: #2f3542; font-weight: 600;">Normal Petrol (L):</label>
+                                    <input type="number" class="stock-input" data-fuel="normal" min="0" style="width: 100%; padding: 12px; border: 1px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+                                </div>
+                                <div class="input-group" style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; color: #2f3542; font-weight: 600;">Diesel (L):</label>
+                                    <input type="number" class="stock-input" data-fuel="diesel" min="0" style="width: 100%; padding: 12px; border: 1px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+                                </div>
+                                <div class="input-group" style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; color: #2f3542; font-weight: 600;">X95 (L):</label>
+                                    <input type="number" class="stock-input" data-fuel="x95" min="0" style="width: 100%; padding: 12px; border: 1px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+                                </div>
+                            </div>
+                            <div class="modal-buttons" style="text-align: right;">
+                                <button id="cancelUpdate" style="background: #f8f9fa; color: #2f3542; border: none; padding: 12px 25px; border-radius: 8px; margin-right: 10px; cursor: pointer; font-size: 1rem; transition: all 0.2s;">Cancel</button>
+                                <button id="saveStock" style="background: linear-gradient(135deg, #44bd32 0%, #2ecc71 100%); color: white; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-size: 1rem; transition: all 0.2s;">Save Changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="usersSection" class="admin-section">
+                <div class="section-title">User Management</div>
+                <div class="users-container" style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div class="users-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                        <h3 style="margin: 0;">Registered Users</h3>
+                        <div class="search-box" style="display: flex; align-items: center;">
+                            <input type="text" id="userSearch" placeholder="Search users..." style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-right: 10px;">
+                            <button id="searchUser" style="background: #44bd32; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Search</button>
+                        </div>
+                    </div>
+                    <div id="usersGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                        <!-- User cards will be populated here -->
+                    </div>
+                </div>
+            </section>
+            <section id="earningsSection" class="admin-section">
+                <div class="section-title">Earnings Management</div>
+                <div class="earnings-container" style="background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+                    <div class="earnings-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #f0f2f5;">
+                        <h3 style="margin: 0; color: #2f3542; font-size: 1.5rem;">Earnings Overview</h3>
+                        <div class="last-updated" style="color: #747d8c; font-size: 0.9rem;">
+                            Last updated: <span id="lastUpdatedTime">Just now</span>
+                        </div>
+                    </div>
+                    
+                    <div class="earnings-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-bottom: 40px;">
+                        <div class="earnings-card" style="background: linear-gradient(135deg, #44bd32 0%, #2ecc71 100%); padding: 25px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(68, 189, 50, 0.2);">
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.1rem; opacity: 0.9;">Total Earnings</h4>
+                            <div class="earnings-amount" style="font-size: 2rem; font-weight: bold;">₹0.00</div>
+                        </div>
+                        <div class="earnings-card" style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); padding: 25px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);">
+                            <h4 style="margin: 0 0 15px 0; font-size: 1.1rem; opacity: 0.9;">Total Orders</h4>
+                            <div class="orders-count" style="font-size: 2rem; font-weight: bold;">0</div>
+                        </div>
+                    </div>
+
+                    <div class="earnings-breakdown" style="margin-top: 40px;">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; font-size: 1.3rem;">Earnings Breakdown</h3>
+                        <div class="breakdown-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px;">
+                            <div class="breakdown-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Normal Petrol</h4>
+                                <div class="fuel-earnings" style="font-size: 1.8rem; color: #44bd32; font-weight: bold;">₹0.00</div>
+                            </div>
+                            <div class="breakdown-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">Diesel</h4>
+                                <div class="fuel-earnings" style="font-size: 1.8rem; color: #44bd32; font-weight: bold;">₹0.00</div>
+                            </div>
+                            <div class="breakdown-card" style="background: #f8f9fa; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: transform 0.2s;">
+                                <h4 style="color: #2f3542; margin: 0 0 15px 0; font-size: 1.1rem;">X95</h4>
+                                <div class="fuel-earnings" style="font-size: 1.8rem; color: #44bd32; font-weight: bold;">₹0.00</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Earnings Table -->
+                    <div class="monthly-earnings" style="margin-top: 50px;">
+                        <h3 style="color: #2f3542; margin-bottom: 25px; font-size: 1.3rem;">Monthly Earnings Breakdown</h3>
+                        <div class="table-container" style="overflow-x: auto; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: #f8f9fa;">
+                                        <th style="padding: 20px; text-align: left; border-bottom: 2px solid #e9ecef; color: #2f3542; font-weight: 600;">Month</th>
+                                        <th style="padding: 20px; text-align: right; border-bottom: 2px solid #e9ecef; color: #2f3542; font-weight: 600;">Normal Petrol</th>
+                                        <th style="padding: 20px; text-align: right; border-bottom: 2px solid #e9ecef; color: #2f3542; font-weight: 600;">Diesel</th>
+                                        <th style="padding: 20px; text-align: right; border-bottom: 2px solid #e9ecef; color: #2f3542; font-weight: 600;">X95</th>
+                                        <th style="padding: 20px; text-align: right; border-bottom: 2px solid #e9ecef; color: #2f3542; font-weight: 600;">Total Earnings</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthlyEarningsTable">
+                                    <!-- Table rows will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        // Tab switching logic
+        const tabs = [
+            { btn: document.getElementById('ordersTab'), section: document.getElementById('ordersSection') },
+            { btn: document.getElementById('stockTab'), section: document.getElementById('stockSection') },
+            { btn: document.getElementById('usersTab'), section: document.getElementById('usersSection') },
+            { btn: document.getElementById('earningsTab'), section: document.getElementById('earningsSection') },
+            // Removed Feedback Management tab
+        ];
+        tabs.forEach(({ btn, section }, idx) => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(({ btn, section }) => {
+                    btn.classList.remove('active');
+                    section.classList.remove('active');
+                });
+                btn.classList.add('active');
+                section.classList.add('active');
+            });
+        });
+
+        // Function to update order statistics
+        async function updateOrderStats() {
+            try {
+                console.log('Fetching order statistics...');
+                const response = await fetch('http://localhost:5000/api/public/orders');
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('API Error:', errorData);
+                    alert('Failed to fetch order statistics: ' + (errorData.message || 'Unknown error'));
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('Received data:', data);
+                
+                if (data.success) {
+                    // Update total orders
+                    document.querySelector('.order-count').textContent = data.count;
+
+                    // Count orders by fuel type
+                    const categoryCounts = {
+                        'Normal Petrol': 0,
+                        'Diesel': 0,
+                        'X95': 0
+                    };
+
+                    // Track total quantities
+                    const quantityTotals = {
+                        'Normal Petrol': 0,
+                        'Diesel': 0,
+                        'X95': 0
+                    };
+
+                    data.orders.forEach(order => {
+                        const fuelType = order.fuelType;
+                        // Map backend fuel types to frontend categories
+                        if (fuelType === 'Regular Fuel') {
+                            categoryCounts['Normal Petrol']++;
+                            quantityTotals['Normal Petrol'] += order.quantity;
+                        } else if (fuelType === 'Diesel') {
+                            categoryCounts['Diesel']++;
+                            quantityTotals['Diesel'] += order.quantity;
+                        } else if (fuelType === 'Premium Fuel') {
+                            categoryCounts['X95']++;
+                            quantityTotals['X95'] += order.quantity;
+                        }
+                    });
+
+                    // Update category counts
+                    const categoryCards = document.querySelectorAll('.category-card');
+                    categoryCards.forEach(card => {
+                        const categoryName = card.querySelector('h4').textContent;
+                        const countElement = card.querySelector('.category-count');
+                        
+                        // Check if this is a quantity card (has 'L' in the text)
+                        if (countElement.textContent.includes('L')) {
+                            countElement.textContent = `${quantityTotals[categoryName] || 0} L`;
+                        } else {
+                            countElement.textContent = categoryCounts[categoryName] || 0;
+                        }
+                    });
+
+                    const totalFuelLiters = (quantityTotals['Normal Petrol'] || 0) + (quantityTotals['Diesel'] || 0) + (quantityTotals['X95'] || 0);
+                    document.querySelector('.petrol-liters-count').textContent = `${totalFuelLiters} L`;
+                } else {
+                    console.error('API returned unsuccessful response:', data);
+                    alert('Failed to fetch order statistics: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error fetching order statistics:', error);
+                alert('Error fetching order statistics: ' + error.message);
+            }
+        }
+
+        // Call updateOrderStats when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateOrderStats();
+        });
+
+        // Update stats every 30 seconds
+        setInterval(updateOrderStats, 30000);
+
+        // Stock Management Functions
+        let currentStock = {
+            'Indian Oil': {
+                'Normal Petrol': 0,
+                'Diesel': 0,
+                'X95': 0
+            },
+            'Shell': {
+                'Normal Petrol': 0,
+                'Diesel': 0,
+                'X95': 0
+            },
+            'Hindustan Petroleum': {
+                'Normal Petrol': 0,
+                'Diesel': 0,
+                'X95': 0
+            }
+        };
+
+        let stockThresholds = {
+            'Indian Oil': {
+                'Normal Petrol': 1000,
+                'Diesel': 1000,
+                'X95': 1000
+            },
+            'Shell': {
+                'Normal Petrol': 1000,
+                'Diesel': 1000,
+                'X95': 1000
+            },
+            'Hindustan Petroleum': {
+                'Normal Petrol': 1000,
+                'Diesel': 1000,
+                'X95': 1000
+            }
+        };
+
+        // Update stock levels
+        function updateStockLevels() {
+            const bunkSections = document.querySelectorAll('.bunk-section');
+            bunkSections.forEach(section => {
+                const bunkName = section.querySelector('h3').textContent;
+                const stockCards = section.querySelectorAll('.stock-card');
+                
+                stockCards.forEach(card => {
+                    const fuelType = card.querySelector('h4').textContent;
+                    const stockLevel = card.querySelector('.stock-level');
+                    const statusText = card.querySelector('.status-text');
+                    const thresholdInput = card.querySelector('.threshold-input');
+
+                    // Update stock level display
+                    stockLevel.textContent = `${currentStock[bunkName][fuelType]} L`;
+
+                    // Update threshold
+                    thresholdInput.value = stockThresholds[bunkName][fuelType];
+
+                    // Update status
+                    if (currentStock[bunkName][fuelType] <= stockThresholds[bunkName][fuelType]) {
+                        statusText.textContent = 'Low Stock';
+                        statusText.style.color = '#e74c3c';
+                    } else {
+                        statusText.textContent = 'Normal';
+                        statusText.style.color = '#44bd32';
+                    }
+                });
+            });
+        }
+
+        // Modal handling
+        const updateStockBtn = document.getElementById('updateStockBtn');
+        const stockUpdateModal = document.getElementById('stockUpdateModal');
+        const cancelUpdate = document.getElementById('cancelUpdate');
+        const saveStock = document.getElementById('saveStock');
+        const bunkTabs = document.querySelectorAll('.bunk-tab');
+
+        let currentBunk = 'Indian Oil';
+
+        updateStockBtn.addEventListener('click', () => {
+            // Pre-fill current values for the first bunk
+            updateModalInputs(currentBunk);
+            stockUpdateModal.style.display = 'block';
+        });
+
+        bunkTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                bunkTabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Update current bunk and inputs
+                currentBunk = tab.textContent;
+                updateModalInputs(currentBunk);
+            });
+        });
+
+        function updateModalInputs(bunkName) {
+            const inputs = document.querySelectorAll('.stock-input');
+            inputs.forEach(input => {
+                const fuelType = input.dataset.fuel;
+                const fuelName = fuelType === 'normal' ? 'Normal Petrol' : 
+                               fuelType === 'diesel' ? 'Diesel' : 'X95';
+                input.value = currentStock[bunkName][fuelName];
+            });
+        }
+
+        cancelUpdate.addEventListener('click', () => {
+            stockUpdateModal.style.display = 'none';
+        });
+
+        saveStock.addEventListener('click', () => {
+            // Update stock levels for current bunk
+            const inputs = document.querySelectorAll('.stock-input');
+            inputs.forEach(input => {
+                const fuelType = input.dataset.fuel;
+                const fuelName = fuelType === 'normal' ? 'Normal Petrol' : 
+                               fuelType === 'diesel' ? 'Diesel' : 'X95';
+                currentStock[currentBunk][fuelName] = parseInt(input.value) || 0;
+            });
+
+            // Update display
+            updateStockLevels();
+            stockUpdateModal.style.display = 'none';
+        });
+
+        // Threshold input handling
+        document.querySelectorAll('.threshold-input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const card = e.target.closest('.stock-card');
+                const bunkSection = card.closest('.bunk-section');
+                const bunkName = bunkSection.querySelector('h3').textContent;
+                const fuelType = card.querySelector('h4').textContent;
+                stockThresholds[bunkName][fuelType] = parseInt(e.target.value) || 0;
+                updateStockLevels();
+            });
+        });
+
+        // Initialize stock levels
+        updateStockLevels();
+
+        // Function to fetch and display users
+        async function fetchUsers() {
+            try {
+                const response = await fetch('http://localhost:5000/api/users/all');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const usersGrid = document.getElementById('usersGrid');
+                    usersGrid.innerHTML = ''; // Clear existing cards
+                    
+                    data.users.forEach(user => {
+                        const card = document.createElement('div');
+                        card.style.background = '#f8f9fa';
+                        card.style.padding = '20px';
+                        card.style.borderRadius = '8px';
+                        card.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                        
+                        card.innerHTML = `
+                            <div style="margin-bottom: 15px;">
+                                <strong style="color: #2f3542; display: block; margin-bottom: 5px;">User ID:</strong>
+                                <span style="color: #747d8c;">${user._id}</span>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <strong style="color: #2f3542; display: block; margin-bottom: 5px;">Name:</strong>
+                                <span style="color: #747d8c;">${user.name}</span>
+                            </div>
+                            <div style="margin-bottom: 15px;">
+                                <strong style="color: #2f3542; display: block; margin-bottom: 5px;">Email:</strong>
+                                <span style="color: #747d8c;">${user.email}</span>
+                            </div>
+                            
+                        `;
+                        
+                        usersGrid.appendChild(card);
+                    });
+                }
+            } catch (error) {
+                console.error('Error fetching users:', error);
+                alert('Error fetching users. Please try again.');
+            }
+        }
+
+        // Search functionality
+        document.getElementById('searchUser').addEventListener('click', () => {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('#usersGrid > div');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('div:nth-child(2) span').textContent.toLowerCase();
+                const email = card.querySelector('div:nth-child(3) span').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || email.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Fetch users when the page loads
+        fetchUsers();
+
+        // Function to update earnings statistics
+        async function updateEarningsStats() {
+            try {
+                const response = await fetch('http://localhost:5000/api/public/orders');
+                if (!response.ok) {
+                    throw new Error('Failed to fetch order data');
+                }
+
+                const data = await response.json();
+                if (!data.success) {
+                    throw new Error(data.message || 'Failed to fetch order data');
+                }
+
+                // Initialize earnings tracking
+                let totalEarnings = 0;
+                const fuelEarnings = {
+                    'Normal Petrol': 0,
+                    'Diesel': 0,
+                    'X95': 0
+                };
+
+                // Calculate earnings for each order
+                data.orders.forEach(order => {
+                    const orderAmount = order.totalAmount || 0;
+                    totalEarnings += orderAmount;
+
+                    // Map backend fuel types to frontend categories
+                    if (order.fuelType === 'Regular Fuel') {
+                        fuelEarnings['Normal Petrol'] += orderAmount;
+                    } else if (order.fuelType === 'Diesel') {
+                        fuelEarnings['Diesel'] += orderAmount;
+                    } else if (order.fuelType === 'Premium Fuel') {
+                        fuelEarnings['X95'] += orderAmount;
+                    }
+                });
+
+                // Update total earnings
+                document.querySelector('.earnings-amount').textContent = `₹${totalEarnings.toFixed(2)}`;
+                
+                // Update total orders
+                document.querySelector('.orders-count').textContent = data.orders.length;
+
+                // Update fuel-specific earnings
+                Object.keys(fuelEarnings).forEach(fuelType => {
+                    const breakdownCards = document.querySelectorAll('.breakdown-card');
+                    breakdownCards.forEach(card => {
+                        const cardTitle = card.querySelector('h4').textContent;
+                        if (cardTitle === fuelType) {
+                            const earningsElement = card.querySelector('.fuel-earnings');
+                            if (earningsElement) {
+                                earningsElement.textContent = `₹${fuelEarnings[fuelType].toFixed(2)}`;
+                            }
+                        }
+                    });
+                });
+
+                // Update monthly earnings table
+                const monthlyEarnings = {};
+                
+                data.orders.forEach(order => {
+                    const orderDate = new Date(order.createdAt);
+                    const monthYear = `${orderDate.toLocaleString('default', { month: 'long' })} ${orderDate.getFullYear()}`;
+                    
+                    if (!monthlyEarnings[monthYear]) {
+                        monthlyEarnings[monthYear] = {
+                            'Normal Petrol': 0,
+                            'Diesel': 0,
+                            'X95': 0,
+                            'Total': 0,
+                            'date': orderDate // Store the actual date for sorting
+                        };
+                    }
+
+                    const amount = order.totalAmount || 0;
+                    monthlyEarnings[monthYear]['Total'] += amount;
+
+                    if (order.fuelType === 'Regular Fuel') {
+                        monthlyEarnings[monthYear]['Normal Petrol'] += amount;
+                    } else if (order.fuelType === 'Diesel') {
+                        monthlyEarnings[monthYear]['Diesel'] += amount;
+                    } else if (order.fuelType === 'Premium Fuel') {
+                        monthlyEarnings[monthYear]['X95'] += amount;
+                    }
+                });
+
+                // Sort months in descending order (most recent first)
+                const sortedMonths = Object.entries(monthlyEarnings)
+                    .sort((a, b) => b[1].date - a[1].date)
+                    .map(entry => entry[0]);
+
+                // Take only the most recent 5 months
+                const recentMonths = sortedMonths.slice(0, 5);
+
+                // Update table
+                const tableBody = document.getElementById('monthlyEarningsTable');
+                tableBody.innerHTML = '';
+
+                if (recentMonths.length === 0) {
+                    const noDataRow = document.createElement('tr');
+                    noDataRow.innerHTML = `
+                        <td colspan="5" style="padding: 15px; text-align: center;">No earnings data available</td>
+                    `;
+                    tableBody.appendChild(noDataRow);
+                } else {
+                    recentMonths.forEach(month => {
+                        const row = document.createElement('tr');
+                        row.style.borderBottom = '1px solid #e9ecef';
+                        row.style.transition = 'background-color 0.2s';
+                        row.onmouseover = () => row.style.backgroundColor = '#f8f9fa';
+                        row.onmouseout = () => row.style.backgroundColor = '';
+                        
+                        row.innerHTML = `
+                            <td style="padding: 20px; color: #2f3542;">${month}</td>
+                            <td style="padding: 20px; text-align: right; color: #2f3542;">₹${monthlyEarnings[month]['Normal Petrol'].toFixed(2)}</td>
+                            <td style="padding: 20px; text-align: right; color: #2f3542;">₹${monthlyEarnings[month]['Diesel'].toFixed(2)}</td>
+                            <td style="padding: 20px; text-align: right; color: #2f3542;">₹${monthlyEarnings[month]['X95'].toFixed(2)}</td>
+                            <td style="padding: 20px; text-align: right; font-weight: bold; color: #44bd32;">₹${monthlyEarnings[month]['Total'].toFixed(2)}</td>
+                        `;
+                        
+                        tableBody.appendChild(row);
+                    });
+
+                    // Add a total row at the bottom
+                    const totalRow = document.createElement('tr');
+                    totalRow.style.background = '#f8f9fa';
+                    totalRow.style.fontWeight = 'bold';
+                    
+                    const totalByFuel = {
+                        'Normal Petrol': 0,
+                        'Diesel': 0,
+                        'X95': 0,
+                        'Total': 0
+                    };
+
+                    // Calculate totals only for the recent 5 months
+                    recentMonths.forEach(month => {
+                        const monthData = monthlyEarnings[month];
+                        totalByFuel['Normal Petrol'] += monthData['Normal Petrol'];
+                        totalByFuel['Diesel'] += monthData['Diesel'];
+                        totalByFuel['X95'] += monthData['X95'];
+                        totalByFuel['Total'] += monthData['Total'];
+                    });
+
+                    totalRow.innerHTML = `
+                        <td style="padding: 20px; color: #2f3542;">Total (Last 5 Months)</td>
+                        <td style="padding: 20px; text-align: right; color: #2f3542;">₹${totalByFuel['Normal Petrol'].toFixed(2)}</td>
+                        <td style="padding: 20px; text-align: right; color: #2f3542;">₹${totalByFuel['Diesel'].toFixed(2)}</td>
+                        <td style="padding: 20px; text-align: right; color: #2f3542;">₹${totalByFuel['X95'].toFixed(2)}</td>
+                        <td style="padding: 20px; text-align: right; color: #44bd32;">₹${totalByFuel['Total'].toFixed(2)}</td>
+                    `;
+                    
+                    tableBody.appendChild(totalRow);
+                }
+
+                // Update last updated time
+                const now = new Date();
+                document.getElementById('lastUpdatedTime').textContent = now.toLocaleTimeString();
+
+            } catch (error) {
+                console.error('Error updating earnings stats:', error);
+                alert('Failed to update earnings statistics: ' + error.message);
+            }
+        }
+
+        // Call updateEarningsStats when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateEarningsStats();
+            // Update earnings every 30 seconds
+            setInterval(updateEarningsStats, 30000);
+        });
+    </script>
+</body>
+</html> 

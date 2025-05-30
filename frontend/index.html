@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuelora</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="left-section">
+            <button id="settingsBtn">⚙️</button>
+                <div class="logo-section">
+                    <div class="title-row">
+                        <img src="logo.png" alt="Fuelora Logo" class="logo">
+                        <h1>Fuelora</h1>
+                    </div>
+                    <div class="welcome-note">Welcome to your trusted fuel delivery partner</div>
+                </div>
+            </div>
+            <div class="right-section">
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="#homeSection" class="active">Home</a></li>
+                        <li><a href="#servicesSection">Services</a></li>
+                        <li><a href="#" id="referralLink">Refer & Earn ₹50</a></li>
+                    </ul>
+                </nav>
+                <div class="header-info">
+                    <p id="walletBalance">🎁 : ₹0</p>
+                </div>
+            <button id="profileBtn">👤</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- News Ticker -->
+    <div class="news-ticker">
+        <div class="ticker-wrapper">
+            <div class="ticker-content">
+                <span class="ticker-item">🔥 Special Offer: Get 10% off on bulk orders</span>
+                <span class="ticker-item">🎁 Refer a friend and earn ₹50 on their first order!</span>
+                <span class="ticker-item">⚡ New Premium Fuel available at competitive prices!</span>
+                <span class="ticker-item">💳 Pay securely with multiple payment options!</span>
+                <span class="ticker-item">⚡ Today's Fuel price: Normal Petrol: ₹110, X95: ₹105, diesel: ₹89</span>
+                <!-- Duplicate for seamless loop -->
+                <span class="ticker-item">🔥 Special Offer: Get 10% off on bulk orders</span>
+                <span class="ticker-item">🎁 Refer a friend and earn ₹50 on their first order!</span>
+                <span class="ticker-item">⚡ New Premium Fuel available at competitive prices!</span>
+                <span class="ticker-item">💳 Pay securely with multiple payment options!</span>
+                <span class="ticker-item">⚡ Today's Fuel price: Normal Petrol: ₹110, X95: ₹105, Diesel: ₹89</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Home Section -->
+    <section id="homeSection" class="hero-section">
+        <div class="hero-content">
+            <h1>Fuel Delivery at Your Doorstep</h1>
+            <p>Order fuel online and get it delivered to your location within minutes</p>
+            <div class="partner-bunks">
+                <p class="partner-text">Our Trusted Fuel Partners</p>
+                <div class="bunk-logos">
+                    <div class="bunk-logo">
+                        <img src="indian.png" alt="Indian Oil">
+                        <span>Indian Oil</span>
+                    </div>
+                    <div class="bunk-logo">
+                        <img src="hp.png" alt="HP Petroleum">
+                        <span>HP Petroleum</span>
+                    </div>
+                    <div class="bunk-logo">
+                        <img src="shell.png" alt="Shell Petroleum">
+                        <span>Shell Petroleum</span>
+                    </div>
+                </div>
+                <p class="quality-text">👌 High-Quality Fuel | ✅ Verified Partners | 📦 Safe Delivery</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicesSection" class="services-section">
+        <h2>Our Services</h2>
+        <div class="services-container">
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="gas-pump.svg" alt="Regular Fuel Icon">
+                </div>
+                <h3>Regular Fuel</h3>
+                <p>Standard grade fuel for everyday vehicles</p>
+</div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="star.svg" alt="Premium Fuel Icon">
+                </div>
+                <h3>Premium Fuel</h3>
+                <p>High-performance fuel for luxury vehicles</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <img src="truck.svg" alt="Diesel Icon">
+                </div>
+                <h3>Diesel</h3>
+                <p>Specialized fuel for commercial vehicles</p>
+            </div>
+
+            
+
+
+        </div>
+    </section>
+
+    <!-- MAP SECTION -->
+    <section id="mapSection">
+        <h2>Your Location</h2>
+        <div id="map"></div>
+    </section>
+
+    <!-- Bunk Selection Below the Map -->
+<div id="bunkSelection">
+    <p><strong>Select a Fuel Bunk Near You:</strong></p>
+    <div id="bunkList"></div>
+</div>
+
+    
+    <!-- FUEL SELECTION SECTION -->
+<section id="fuelSection">
+    <h2>Select Fuel</h2>
+    <div class="fuel-container">
+        <label>Fuel Type:</label>
+        <select id="fuelType" name="fuelType" required>
+            <option value="">Select Fuel Type</option>
+                <option value="power_petrol">Power Petrol</option>
+                <option value="normal_petrol">Normal Petrol</option>
+                <option value="x95_petrol">X95 Petrol</option>
+                <option value="diesel">Diesel</option>
+        </select>
+
+        <label>Quantity (Max 5L):</label>
+        <input type="number" id="fuelQuantity" min="1" max="5" value="1">
+
+        <button id="calculatePrice">Calculate Price</button>
+    </div>
+</section>
+
+<!-- PRICE BREAKDOWN SECTION -->
+<section id="priceBreakdown">
+    <h2>Price Breakdown</h2>
+    <p>
+        <span>Base Price:</span>
+        <span>₹<span id="basePrice">0</span></span>
+        <span class="unit">/L</span>
+    </p>
+    <p>
+        <span>Other Charges:</span>
+        <span>₹<span id="otherCharges">10</span></span>
+        <span class="unit">/L</span>
+    </p>
+    <p>
+        <span>Delivery Partner Fee:</span>
+        <span>₹<span id="deliveryFee">30</span></span>
+        <span class="unit"></span>
+    </p>
+    <p id="bulkDiscount" style="display: none;">
+        <span>Bulk Order Discount (5%):</span>
+        <span>-₹<span id="discountAmount">0</span></span>
+        <span class="unit"></span>
+    </p>
+    <p class="total-price">
+        <span>Total Price:</span>
+        <span>₹<span id="totalPrice">0</span></span>
+        <span class="unit"></span>
+    </p>
+    <button id="proceedToPayment">Proceed to Payment</button>
+</section>
+
+
+    <!-- Settings Dropdown -->
+    <div id="settingsDropdown" class="dropdown">
+        <ul>
+            <li><button id="feedbackBtn">Feedback</button></li>
+            <li><button id="supportBtn">Support</button></li>
+            <li><button id="orderHistoryBtn">Order History</button></li>
+        </ul>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div id="feedbackSection" style="display: none;">
+                <h2>Feedback</h2>
+                <textarea id="feedbackInput" placeholder="Enter your feedback"></textarea>
+                <button id="submitFeedback">Submit</button>
+                <p id="feedbackMessage"></p>
+            </div>
+            <div id="supportSection" style="display: none;">
+                <h2>Support</h2>
+                <div class="support-form">
+                    <input type="text" id="supportName" placeholder="Your Name" required>
+                    <input type="tel" id="supportPhone" placeholder="Phone Number" pattern="[0-9]{10}" maxlength="10" required>
+                    <select id="supportLanguage" required>
+                        <option value="">Select Preferred Language</option>
+                        <option value="english">English</option>
+                        <option value="hindi">Hindi</option>
+                        <option value="tamil">Tamil</option>
+                        <option value="telugu">Telugu</option>
+                        <option value="kannada">Kannada</option>
+                    </select>
+                    <textarea id="supportInput" placeholder="Describe your issue in detail" required></textarea>
+                <button id="submitSupport">Submit</button>
+                <p id="supportMessage"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            
+            <h3 id="profileGreeting">Welcome! </h3>
+            <div id="loggedInProfile" style="display: none;">
+                <p>You are logged in.</p>
+                <button id="logoutBtn">Logout</button>
+            </div>
+    
+
+            <div id="walletSection">
+                <h3>Wallet Balance: ₹<span id="walletBalance">0</span></h3>
+            </div>
+            
+            <div id="transactionHistorySection">
+                <h3>Transaction History</h3>
+                <ul id="transactionList">
+                    <li>No transactions yet.</li>
+                </ul>
+            </div>
+            
+            
+            <!-- Login Form -->
+            <div id="loginForm">
+                <h2>Login</h2>
+                <div style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <label for="adminToggle" style="margin-right: 10px;">Login as Admin</label>
+                    <input type="checkbox" id="adminToggle" style="width: 40px; height: 20px; accent-color: #44bd32;">
+                </div>
+                <div id="userFields">
+                <input type="email" id="loginEmail" placeholder="Email" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <div id="adminFields" style="display: none;">
+                    <input type="text" id="adminCode" placeholder="Admin Code" required>
+                    <input type="email" id="adminEmail" placeholder="Admin Email" required>
+                    <input type="password" id="adminPassword" placeholder="Password" required>
+                </div>
+                <button id="loginBtn">Login</button>
+                <p id="loginMessage"></p>
+                <p>Don't have an account? <a href="#" id="showSignUp">Sign Up</a></p>
+            </div>
+
+            <!-- Sign-Up Form -->
+            <div id="signUpForm" style="display: none;">
+                <h2>Sign Up</h2>
+                <div style="margin-bottom: 10px; display: flex; align-items: center;">
+                    <label for="adminSignUpToggle" style="margin-right: 10px;">Sign Up as Admin</label>
+                    <input type="checkbox" id="adminSignUpToggle" style="width: 40px; height: 20px; accent-color: #44bd32;">
+                </div>
+                <div id="userSignUpFields">
+                <input type="text" id="signUpName" placeholder="Full Name" required>
+                <input type="email" id="signUpEmail" placeholder="Email" required>
+                <input type="password" id="signUpPassword" placeholder="Password" required>
+                </div>
+                <div id="adminSignUpFields" style="display: none;">
+                    <input type="text" id="adminSignUpName" placeholder="Admin Name" required>
+                    <input type="email" id="adminSignUpEmail" placeholder="Admin Email" required>
+                    <input type="password" id="adminSignUpPassword" placeholder="Password" required>
+                    <input type="text" id="adminSignUpCode" placeholder="Admin Code" required>
+                </div>
+                <button id="signUpBtn">Sign Up</button>
+                <p id="signUpMessage"></p>
+                <p>Already have an account? <a href="#" id="showLogin">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+<div id="paymentModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+            
+            <!-- Mobile Number Verification -->
+            <div id="mobileVerification">
+                <h2>Verify Mobile Number</h2>
+                <p>Total Amount to Pay: ₹<span id="modalTotalPrice">0</span></p>
+                <input type="tel" id="mobileNumber" placeholder="Enter your mobile number" pattern="[0-9]{10}" maxlength="10">
+                <button id="verifyMobile">Proceed</button>
+                <p id="mobileError" style="color: red; display: none;">Please enter a valid 10-digit mobile number</p>
+            </div>
+
+            <!-- Payment Options (Initially Hidden) -->
+            <div id="paymentOptions" style="display: none;">
+        <h2>Choose Payment Method</h2>
+                <div id="walletPaymentOption" style="display: none;">
+                    <div class="wallet-balance-info">
+                        <p>Available Wallet Balance: ₹<span id="paymentWalletBalance">0</span></p>
+                        <p>Order Amount: ₹<span id="orderAmount">0</span></p>
+                    </div>
+                    <button id="useWalletBtn">Pay using Wallet</button>
+                    <p class="or-divider">OR</p>
+                </div>
+                <div class="payment-buttons">
+                    <button id="upiBtn">UPI Payment</button>
+                    <button id="cardPaymentBtn">Card Payment</button>
+                    <button id="codPaymentBtn">Cash on Delivery</button>
+                </div>
+            </div>
+
+            <!-- UPI Payment Section -->
+            <div id="upiPaymentSection" style="display: none;">
+                <h3>Scan QR Code to Pay</h3>
+                <img src="qr.jpg" alt="UPI QR Code" style="width: 200px; height: 200px;">
+                <p>Or Pay using UPI ID: fuelora@upi</p>
+                <button id="confirmUpiPayment">Confirm Payment</button>
+            </div>
+
+        <!-- Card Payment Section -->
+        <div id="cardPaymentSection" style="display: none;">
+            <h3>Enter Card Details</h3>
+                <input type="text" id="cardNumber" placeholder="Card Number" maxlength="16">
+                <div class="card-details">
+                    <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                    <input type="text" id="cardCVV" placeholder="CVV" maxlength="3">
+                </div>
+                <button id="confirmCardPayment">Pay Now</button>
+        </div>
+
+        <!-- COD Confirmation -->
+        <div id="codConfirmation" style="display: none;">
+                <h3>Cash on Delivery</h3>
+                <p>Please keep exact change ready</p>
+            <button id="confirmCOD">Confirm Order</button>
+        </div>
+    </div>
+</div>
+
+<!-- Order Confirmation Modal -->
+<div id="orderConfirmationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Order Confirmed ✅</h2>
+            <div id="orderSummary" class="order-summary">
+                <!-- Order details will be inserted here -->
+            </div>
+        <button id="closeOrderModal">Close</button>
+    </div>
+</div>
+
+    <!--AIzaSyAGRd2vsHxRmRPVsJPJVgZon1DXnSYuiwQ-->
+    <script src="script.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAZGKgvZiVkqQBvmjD_eIFxPy3qh7mTsA&callback=initMap"></script>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Fuelora</h3>
+                <p>Your trusted fuel delivery partner</p>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#homeSection">Home</a></li>
+                    <li><a href="#servicesSection">Services</a></li>
+                    <li><a href="#priceBreakdown">Pricing</a></li>
+                    <li><a href="#" id="footerContact">Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Fuelora. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html
